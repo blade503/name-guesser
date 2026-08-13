@@ -16,7 +16,7 @@ Tout est dans [`src/config.ts`](src/config.ts) : titre, accroche, prénoms des p
 
 ### 1. Cloudflare (API + base)
 
-La base D1 doit exister (`npx wrangler d1 create pronostics-bebe` si ce n'est pas déjà fait).
+La base D1 doit exister (`npx wrangler d1 create name-guesser` si ce n'est pas déjà fait).
 
 ```bash
 npx wrangler login
@@ -35,7 +35,7 @@ npm run db:init
 npx wrangler secret put ADMIN_PASSWORD --config worker/wrangler.toml
 ```
 
-Déploie l'API — note l'URL affichée à la fin (`https://pronostics-bebe-api.<sous-domaine>.workers.dev`) :
+Déploie l'API — note l'URL affichée à la fin (`https://name-guesser-api.<sous-domaine>.workers.dev`) :
 
 ```bash
 npm run worker:deploy
@@ -68,7 +68,7 @@ de pronostic disparaît. Le résultat reste modifiable après coup (faute de fra
 Deux terminaux :
 
 ```bash
-npx wrangler d1 execute pronostics-bebe --config worker/wrangler.toml --local --file worker/schema.sql
+npx wrangler d1 execute name-guesser --config worker/wrangler.toml --local --file worker/schema.sql
 ```
 
 ```bash

@@ -1,4 +1,4 @@
-name = "pronostics-bebe-api"
+name = "name-guesser-api"
 main = "index.ts"
 compatibility_date = "2026-08-01"
 
@@ -12,8 +12,8 @@ ALLOWED_ORIGINS = "http://localhost:5173,https://blade503.github.io"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "pronostics-bebe"
-database_id = "<à remplir après `wrangler d1 create pronostics-bebe`>"
+database_name = "name-guesser"
+database_id = "8064cc1f-0fb4-4e7f-ab31-38ff16529b68"
 
 [observability]
 enabled = true
