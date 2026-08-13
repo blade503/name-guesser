@@ -17,8 +17,16 @@ export const config = {
   /** Date prévue d'accouchement (ISO, heure locale). Sert au compte à rebours. */
   dueDate: '2026-09-15T00:00:00',
 
-  /** URL du Worker Cloudflare qui expose l'API. Surchargée par VITE_API_URL en CI. */
-  apiUrl: import.meta.env.VITE_API_URL ?? 'http://localhost:8787',
+  /**
+   * URL du Worker Cloudflare qui expose l'API. Publique par nature (elle finit dans
+   * le bundle), donc écrite en dur : en dev on vise le Worker local, sinon le déployé.
+   * VITE_API_URL reste prioritaire si besoin de pointer ailleurs.
+   */
+  apiUrl:
+    import.meta.env.VITE_API_URL ??
+    (import.meta.env.DEV
+      ? 'http://localhost:8787'
+      : 'https://name-guesser-api.pronostics-bebe.workers.dev'),
 
   /** Bornes des champs du formulaire (garde-fous de saisie). */
   limits: {

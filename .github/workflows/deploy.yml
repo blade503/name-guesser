@@ -32,7 +32,8 @@ jobs:
         env:
           # VITE_BASE : sous-chemin Pages, ex. /pronostics-bebe/
           VITE_BASE: /${{ github.event.repository.name }}/
-          # VITE_API_URL : à définir dans Settings > Secrets and variables > Actions > Variables
+          # Optionnel : l'URL du Worker est déjà en dur dans src/config.ts.
+          # Définir la variable de repo VITE_API_URL ne sert qu'à pointer ailleurs.
           VITE_API_URL: ${{ vars.VITE_API_URL }}
 
       - uses: actions/configure-pages@v5

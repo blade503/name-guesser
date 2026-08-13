@@ -46,10 +46,11 @@ npm run worker:deploy
 Repo : [blade503/name-guesser](https://github.com/blade503/name-guesser).
 
 1. **Settings → Pages → Source** : choisir **GitHub Actions**.
-2. **Settings → Secrets and variables → Actions → Variables** : ajouter
-   `VITE_API_URL` = l'URL du Worker notée à l'étape précédente.
-3. Un push sur `main` déclenche le déploiement ; le site sort sur
+2. Un push sur `main` déclenche le déploiement ; le site sort sur
    <https://blade503.github.io/name-guesser/>.
+
+L'URL du Worker est écrite en dur dans [`src/config.ts`](src/config.ts) (elle est publique
+de toute façon). La variable de repo `VITE_API_URL` la surcharge si besoin.
 
 L'origine `https://blade503.github.io` est déjà déclarée dans `ALLOWED_ORIGINS`
 ([`worker/wrangler.toml`](worker/wrangler.toml)) : sans elle le navigateur bloquerait
