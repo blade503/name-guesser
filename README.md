@@ -43,27 +43,21 @@ npm run worker:deploy
 
 ### 2. GitHub Pages (site)
 
-1. Crée un repo GitHub, puis pousse le code.
-2. **Settings → Pages → Source** : choisir **GitHub Actions**.
-3. **Settings → Secrets and variables → Actions → Variables** : ajouter
+Repo : [blade503/name-guesser](https://github.com/blade503/name-guesser).
+
+1. **Settings → Pages → Source** : choisir **GitHub Actions**.
+2. **Settings → Secrets and variables → Actions → Variables** : ajouter
    `VITE_API_URL` = l'URL du Worker notée à l'étape précédente.
-4. Un push sur `main` déclenche le déploiement ; le site sort sur
-   `https://<user>.github.io/<repo>/`.
+3. Un push sur `main` déclenche le déploiement ; le site sort sur
+   <https://blade503.github.io/name-guesser/>.
 
-### 3. Autoriser le site à appeler l'API
-
-Dans [`worker/wrangler.toml`](worker/wrangler.toml), remplace `<user>` par ton pseudo GitHub
-dans `ALLOWED_ORIGINS`, puis redéploie :
-
-```bash
-npm run worker:deploy
-```
-
-Sans cette étape le navigateur bloque les appels (CORS).
+L'origine `https://blade503.github.io` est déjà déclarée dans `ALLOWED_ORIGINS`
+([`worker/wrangler.toml`](worker/wrangler.toml)) : sans elle le navigateur bloquerait
+les appels à l'API (CORS).
 
 ## Espace parents
 
-`https://<user>.github.io/<repo>/#/parents` — mot de passe = le secret `ADMIN_PASSWORD`.
+<https://blade503.github.io/name-guesser/#/parents> — mot de passe = le secret `ADMIN_PASSWORD`.
 
 Le formulaire y enregistre le prénom, le poids, la taille et la date de naissance.
 **Dès l'enregistrement, le résultat et le classement deviennent publics** ; le formulaire

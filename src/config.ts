@@ -9,7 +9,7 @@ export const config = {
   tagline: 'Prénom, poids, taille… à toi de deviner !',
 
   /** Prénoms des parents, affichés dans le texte d'intro. */
-  parents: 'Papa & Maman',
+  parents: 'Stéphanie & Julien',
 
   /** Date prévue d'accouchement (ISO, heure locale). Sert au compte à rebours. */
   dueDate: '2026-09-15T00:00:00',

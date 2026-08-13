@@ -3,9 +3,9 @@ main = "index.ts"
 compatibility_date = "2026-08-01"
 
 # ALLOWED_ORIGINS : origines autorisées à appeler l'API (séparées par des virgules).
-# Remplacer <user> par ton pseudo GitHub après le premier déploiement de Pages.
+# L'origine ne contient que le domaine, jamais le sous-chemin /name-guesser/.
 [vars]
-ALLOWED_ORIGINS = "http://localhost:5173,https://<user>.github.io"
+ALLOWED_ORIGINS = "http://localhost:5173,https://blade503.github.io"
 
 # ADMIN_PASSWORD n'est PAS ici : c'est un secret, poussé via
 #   npx wrangler secret put ADMIN_PASSWORD --config worker/wrangler.toml
