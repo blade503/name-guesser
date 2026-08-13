@@ -4,6 +4,8 @@ export type Prediction = {
   id: number
   author: string
   firstName: string
+  /** Date de naissance pronostiquée, format YYYY-MM-DD. */
+  birthDate: string
   weightG: number
   heightCm: number
   message: string | null

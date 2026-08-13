@@ -11,6 +11,9 @@ export const config = {
   /** Prénoms des parents, affichés dans le texte d'intro. */
   parents: 'Stéphanie & Julien',
 
+  /** Signature affichée en pied de page. */
+  credit: 'par le meilleur tonton du monde',
+
   /** Date prévue d'accouchement (ISO, heure locale). Sert au compte à rebours. */
   dueDate: '2026-09-15T00:00:00',
 

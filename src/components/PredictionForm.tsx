@@ -8,6 +8,8 @@ const { weightG, heightCm } = config.limits
 export default function PredictionForm({ onCreated }: { onCreated: (p: Prediction) => void }) {
   const [author, setAuthor] = useState('')
   const [firstName, setFirstName] = useState('')
+  // Pré-rempli sur le terme : la plupart des paris gravitent autour.
+  const [birthDate, setBirthDate] = useState(config.dueDate.slice(0, 10))
   const [weight, setWeight] = useState(3300)
   const [height, setHeight] = useState(50)
   const [message, setMessage] = useState('')
@@ -22,6 +24,7 @@ export default function PredictionForm({ onCreated }: { onCreated: (p: Predictio
       const created = await api.createPrediction({
         author: author.trim(),
         firstName: firstName.trim(),
+        birthDate,
         weightG: weight,
         heightCm: height,
         message: message.trim() || null,
@@ -65,6 +68,20 @@ export default function PredictionForm({ onCreated }: { onCreated: (p: Predictio
           onChange={(e) => setFirstName(e.target.value)}
           placeholder="Pauline"
           maxLength={40}
+          required
+        />
+      </div>
+
+      <div>
+        <label className="label" htmlFor="birthDate">
+          Elle naîtra le…
+        </label>
+        <input
+          id="birthDate"
+          type="date"
+          className="field"
+          value={birthDate}
+          onChange={(e) => setBirthDate(e.target.value)}
           required
         />
       </div>

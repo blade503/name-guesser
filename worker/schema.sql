@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS predictions (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
   author     TEXT    NOT NULL,
   first_name TEXT    NOT NULL,
+  birth_date TEXT    NOT NULL,
   weight_g   INTEGER NOT NULL,
   height_cm  REAL    NOT NULL,
   message    TEXT,

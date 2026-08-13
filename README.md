@@ -84,9 +84,9 @@ Le front tape sur `http://localhost:8787` par défaut.
 
 ## Barème du classement
 
-100 points : 50 pour le prénom exact (accents et casse ignorés), 25 pour le poids
-(−1 pt par 40 g d'écart), 25 pour la taille (−1 pt par 0,2 cm d'écart). Voir
-[`src/lib/scoring.ts`](src/lib/scoring.ts).
+100 points : 40 pour le prénom exact (accents et casse ignorés), puis 20 par critère
+chiffré — date de naissance (0 au-delà de 10 jours d'écart), poids (0 au-delà d'1 kg),
+taille (0 au-delà de 5 cm). Voir [`src/lib/scoring.ts`](src/lib/scoring.ts).
 
 ## Commandes
 

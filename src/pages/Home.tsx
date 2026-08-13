@@ -87,7 +87,8 @@ export default function Home() {
         )}
 
         <footer className="mt-12 text-center font-display text-sm text-ink/40">
-          Fait avec 💛 pour {config.parents}
+          <p>Fait avec 💛 pour {config.parents}</p>
+          <p className="mt-1">{config.credit} 😎</p>
         </footer>
       </main>
     </>

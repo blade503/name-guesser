@@ -1,5 +1,5 @@
 import type { Prediction } from '../lib/api'
-import { formatHeight, formatWeight } from '../lib/scoring'
+import { formatDate, formatHeight, formatWeight } from '../lib/scoring'
 
 const TINTS = ['bg-blush/25', 'bg-sky-soft/40', 'bg-mint/30', 'bg-sunny/30', 'bg-lavender/25']
 
@@ -28,6 +28,9 @@ export default function PredictionList({ predictions }: { predictions: Predictio
               <span className="font-display text-2xl font-extrabold text-blush-deep">{p.firstName}</span>
             </div>
             <p className="mt-2 font-semibold text-ink/80">
+              le {formatDate(p.birthDate)}
+            </p>
+            <p className="font-semibold text-ink/80">
               {formatWeight(p.weightG)} · {formatHeight(p.heightCm)}
             </p>
             {p.message && <p className="mt-2 text-sm italic text-ink/60">« {p.message} »</p>}

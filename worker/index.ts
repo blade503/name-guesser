@@ -14,6 +14,7 @@ type PredictionRow = {
   id: number
   author: string
   first_name: string
+  birth_date: string
   weight_g: number
   height_cm: number
   message: string | null
@@ -65,7 +66,7 @@ async function route(request: Request, env: Env, pathname: string): Promise<Resp
 
   if (pathname === '/api/predictions' && method === 'GET') {
     const { results } = await env.DB.prepare(
-      'SELECT id, author, first_name, weight_g, height_cm, message, created_at FROM predictions ORDER BY created_at DESC, id DESC',
+      'SELECT id, author, first_name, birth_date, weight_g, height_cm, message, created_at FROM predictions ORDER BY created_at DESC, id DESC',
     ).all<PredictionRow>()
     return json(results.map(toPrediction))
   }
@@ -99,6 +100,7 @@ async function createPrediction(request: Request, env: Env) {
 
   const author = text(body.author, 'author', LIMITS.author)
   const firstName = text(body.firstName, 'firstName', LIMITS.firstName)
+  const birthDate = date(body.birthDate, 'birthDate')
   const weightG = int(body.weightG, 'weightG', LIMITS.weightG)
   const heightCm = num(body.heightCm, 'heightCm', LIMITS.heightCm)
   const message =
@@ -112,11 +114,11 @@ async function createPrediction(request: Request, env: Env) {
   }
 
   const row = await env.DB.prepare(
-    `INSERT INTO predictions (author, first_name, weight_g, height_cm, message)
-     VALUES (?, ?, ?, ?, ?)
-     RETURNING id, author, first_name, weight_g, height_cm, message, created_at`,
+    `INSERT INTO predictions (author, first_name, birth_date, weight_g, height_cm, message)
+     VALUES (?, ?, ?, ?, ?, ?)
+     RETURNING id, author, first_name, birth_date, weight_g, height_cm, message, created_at`,
   )
-    .bind(author, firstName, weightG, heightCm, message)
+    .bind(author, firstName, birthDate, weightG, heightCm, message)
     .first<PredictionRow>()
 
   if (!row) throw new HttpError('Enregistrement impossible.', 500)
@@ -129,10 +131,7 @@ async function saveResult(request: Request, env: Env) {
   const firstName = text(body.firstName, 'firstName', LIMITS.firstName)
   const weightG = int(body.weightG, 'weightG', LIMITS.weightG)
   const heightCm = num(body.heightCm, 'heightCm', LIMITS.heightCm)
-  const bornAt = String(body.bornAt ?? '')
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(bornAt)) {
-    throw new HttpError('Date de naissance invalide.', 400)
-  }
+  const bornAt = date(body.bornAt, 'bornAt')
 
   await env.DB.prepare(
     `INSERT INTO result (id, first_name, weight_g, height_cm, born_at, updated_at)
@@ -205,6 +204,16 @@ function int(value: unknown, field: string, range: { min: number; max: number })
   return Math.round(num(value, field, range))
 }
 
+/** Date au format YYYY-MM-DD, réellement existante (rejette 2026-02-31). */
+function date(value: unknown, field: string): string {
+  const s = String(value ?? '')
+  const parsed = new Date(`${s}T00:00:00Z`)
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s) || Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== s) {
+    throw new HttpError(`Le champ « ${field} » n'est pas une date valide.`, 400)
+  }
+  return s
+}
+
 function corsHeaders(request: Request, env: Env): Record<string, string> {
   const origin = request.headers.get('Origin') ?? ''
   const allowed = env.ALLOWED_ORIGINS.split(',').map((o) => o.trim())
@@ -231,6 +240,7 @@ const toPrediction = (r: PredictionRow) => ({
   id: r.id,
   author: r.author,
   firstName: r.first_name,
+  birthDate: r.birth_date,
   weightG: r.weight_g,
   heightCm: r.height_cm,
   message: r.message,
