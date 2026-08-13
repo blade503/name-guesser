@@ -22,8 +22,9 @@ export const config = {
    * le bundle), donc écrite en dur : en dev on vise le Worker local, sinon le déployé.
    * VITE_API_URL reste prioritaire si besoin de pointer ailleurs.
    */
+  // `||` et non `??` : en CI, une variable de repo absente arrive comme chaîne vide.
   apiUrl:
-    import.meta.env.VITE_API_URL ??
+    import.meta.env.VITE_API_URL ||
     (import.meta.env.DEV
       ? 'http://localhost:8787'
       : 'https://name-guesser-api.pronostics-bebe.workers.dev'),
