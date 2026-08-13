@@ -19,15 +19,6 @@ export type Result = {
   bornAt: string
 }
 
-/** Ce que voient les parents : le résultat en cours de saisie, publié ou non. */
-export type Draft = {
-  firstName: string | null
-  weightG: number | null
-  heightCm: number | null
-  bornAt: string | null
-  published: boolean
-}
-
 export type NewPrediction = Omit<Prediction, 'id' | 'createdAt'>
 
 class ApiError extends Error {
@@ -65,14 +56,11 @@ export const api = {
 
   getResult: () => request<Result | null>('/api/result'),
 
-  getDraft: (password: string) =>
-    request<Draft | null>('/api/admin/result', { headers: { 'X-Admin-Password': password } }),
-
-  saveResult: (draft: Omit<Draft, 'published'>, password: string, publish: boolean) =>
-    request<Draft>('/api/result', {
+  saveResult: (r: Result, password: string) =>
+    request<Result>('/api/result', {
       method: 'POST',
       headers: { 'X-Admin-Password': password },
-      body: JSON.stringify({ ...draft, publish }),
+      body: JSON.stringify(r),
     }),
 
   checkPassword: (password: string) =>
