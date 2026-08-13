@@ -22,10 +22,11 @@ type PredictionRow = {
 }
 
 type ResultRow = {
-  first_name: string
-  weight_g: number
-  height_cm: number
-  born_at: string
+  first_name: string | null
+  weight_g: number | null
+  height_cm: number | null
+  born_at: string | null
+  published: number
 }
 
 const LIMITS = {
@@ -75,11 +76,17 @@ async function route(request: Request, env: Env, pathname: string): Promise<Resp
     return json(await createPrediction(request, env), 201)
   }
 
+  // Tant que published = 0, la route publique ne révèle rien — pas même le prénom.
   if (pathname === '/api/result' && method === 'GET') {
-    const row = await env.DB.prepare(
-      'SELECT first_name, weight_g, height_cm, born_at FROM result WHERE id = 1',
-    ).first<ResultRow>()
-    return json(row ? toResult(row) : null)
+    const row = await readResult(env)
+    return json(row?.published ? toResult(row) : null)
+  }
+
+  // Vue des parents : renvoie le brouillon scellé, publié ou non.
+  if (pathname === '/api/admin/result' && method === 'GET') {
+    requireAdmin(request, env)
+    const row = await readResult(env)
+    return json(row ? toDraft(row) : null)
   }
 
   if (pathname === '/api/result' && method === 'POST') {
@@ -125,28 +132,46 @@ async function createPrediction(request: Request, env: Env) {
   return toPrediction(row)
 }
 
+const readResult = (env: Env) =>
+  env.DB.prepare(
+    'SELECT first_name, weight_g, height_cm, born_at, published FROM result WHERE id = 1',
+  ).first<ResultRow>()
+
+/**
+ * Enregistre le brouillon des parents. Les champs absents sont acceptés tant que
+ * `publish` est faux — publier exige en revanche les quatre.
+ */
 async function saveResult(request: Request, env: Env) {
   const body = await readJson(request)
+  const publish = body.publish === true
 
-  const firstName = text(body.firstName, 'firstName', LIMITS.firstName)
-  const weightG = int(body.weightG, 'weightG', LIMITS.weightG)
-  const heightCm = num(body.heightCm, 'heightCm', LIMITS.heightCm)
-  const bornAt = date(body.bornAt, 'bornAt')
+  const optional = <T>(value: unknown, parse: () => T): T | null =>
+    value == null || value === '' ? null : parse()
+
+  const firstName = optional(body.firstName, () => text(body.firstName, 'firstName', LIMITS.firstName))
+  const weightG = optional(body.weightG, () => int(body.weightG, 'weightG', LIMITS.weightG))
+  const heightCm = optional(body.heightCm, () => num(body.heightCm, 'heightCm', LIMITS.heightCm))
+  const bornAt = optional(body.bornAt, () => date(body.bornAt, 'bornAt'))
+
+  if (publish && (firstName === null || weightG === null || heightCm === null || bornAt === null)) {
+    throw new HttpError('Prénom, date, poids et taille sont tous requis pour publier.', 400)
+  }
 
   await env.DB.prepare(
-    `INSERT INTO result (id, first_name, weight_g, height_cm, born_at, updated_at)
-     VALUES (1, ?, ?, ?, ?, datetime('now'))
+    `INSERT INTO result (id, first_name, weight_g, height_cm, born_at, published, updated_at)
+     VALUES (1, ?, ?, ?, ?, ?, datetime('now'))
      ON CONFLICT(id) DO UPDATE SET
        first_name = excluded.first_name,
        weight_g   = excluded.weight_g,
        height_cm  = excluded.height_cm,
        born_at    = excluded.born_at,
+       published  = excluded.published,
        updated_at = excluded.updated_at`,
   )
-    .bind(firstName, weightG, heightCm, bornAt)
+    .bind(firstName, weightG, heightCm, bornAt, publish ? 1 : 0)
     .run()
 
-  return { firstName, weightG, heightCm, bornAt }
+  return { firstName, weightG, heightCm, bornAt, published: publish }
 }
 
 /* ---------- auth ---------- */
@@ -253,3 +278,5 @@ const toResult = (r: ResultRow) => ({
   heightCm: r.height_cm,
   bornAt: r.born_at,
 })
+
+const toDraft = (r: ResultRow) => ({ ...toResult(r), published: r.published === 1 })

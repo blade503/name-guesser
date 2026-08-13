@@ -15,7 +15,7 @@ export const config = {
   credit: 'par le meilleur tonton du monde',
 
   /** Date prévue d'accouchement (ISO, heure locale). Sert au compte à rebours. */
-  dueDate: '2026-09-15T00:00:00',
+  dueDate: '2026-09-28T00:00:00',
 
   /**
    * URL du Worker Cloudflare qui expose l'API. Publique par nature (elle finit dans
