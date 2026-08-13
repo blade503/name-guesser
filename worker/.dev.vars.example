@@ -1,0 +1,2 @@
+# Copier en .dev.vars (gitignoré) pour le développement local du Worker.
+ADMIN_PASSWORD=motdepasse-local
